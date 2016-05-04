@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 public class ImagePanel extends JPanel {
 
 	public ImagePanel() {
-
+		
 		this.addComponentListener(new ComponentAdapter() {
 			// перерисовывает картинку в случае изменения размеров фрейма...
 			@Override
