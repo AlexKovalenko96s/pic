@@ -3,7 +3,14 @@ package ua.kn.laba5;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
@@ -119,18 +126,55 @@ public class ImagePanel extends JPanel {
 		}
 	}
 
-	public void setImage(String path) {
-		try {
+	public void setImage(String path) throws IOException {
+		
 			img = ImageIO.read(new File(path));
+			byte[] array = Files.readAllBytes(new File(path).toPath());
+			//byte[]array2 = new byte[150400];
+			ArrayList<Byte> list = new ArrayList<Byte>();
+			
+			System.out.println(array.length);
+			
+			//for(int j=1; j<=4; j++){
+
+				
+				//if(j==1 || j==3 || j==5 || j==7 || j==9 || j==11 || j==13 || j==15){
+					
+					//for(int i=0; i<3000; i++){
+				
+						//list.add(array[i]);
+				//	}
+				//}
+			//}
+					for(int i=6000; i<9000; i++){
+						
+						list.add(array[i]);
+					}
+//			byte [] array2 = new byte[3000];
+//			for(int i=0; i<3000; i++){
+//				array2[i]=array[i];
+//			}
+			
+			byte [] array2 = new byte[list.size()];
+			
+			for(int i=0; i<list.size(); i++){
+				array2[i]=list.get(i);
+			}
+			
+			BufferedImage imag_pic =ImageIO.read(new ByteArrayInputStream(array2));
+			img = imag_pic;
+			
 			zoom = 1;
 			xImg = 0;
 			yImg = 0;
 			wImg = img.getWidth(ImagePanel.this);
 			hImg = img.getHeight(ImagePanel.this);
+			
 			repaint();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		
+//		byte[] imageInByte = img.toByteArray();
+//		Image image = Toolkit.getDefaultToolkit().createImage(byte[] imagedata);
 	}
 
 	private int xImg, yImg, wImg, hImg; // переменные в которых хранятся

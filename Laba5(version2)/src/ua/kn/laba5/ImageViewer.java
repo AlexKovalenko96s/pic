@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -45,7 +46,10 @@ class ImageViewerFrame extends JFrame{
 //			fr.close();
 			br.close();
 			
-		}catch(Exception ex){}
+		}catch(Exception ex){
+
+			System.out.println(ex.getMessage());
+		}
 	}
 	
 	
@@ -77,12 +81,13 @@ class ImageViewerFrame extends JFrame{
 	            int result = chooser.showOpenDialog(null);
 	 
 	            if (result == JFileChooser.APPROVE_OPTION) {
-	                panel.setImage(chooser.getSelectedFile().getPath());
+	                try {
+						panel.setImage(chooser.getSelectedFile().getPath());
+					} catch (IOException e1) {e1.printStackTrace();}
 	                String s = chooser.getSelectedFile().getPath();
 	                string_file = s.substring(s.indexOf("&"));
 	                try{
 	    				FileWriter fw = new FileWriter(file);
-	    				
 	    				fw.append(string_file);
 	    				fw.flush();
 	    				fw.close();
