@@ -1,14 +1,21 @@
 package ua.kn.laba5;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -19,7 +26,7 @@ public class ImagePanel extends JPanel {
 	public ImagePanel() {
 
 		this.addComponentListener(new ComponentAdapter() {
-			// перерисовывает картинку в случае изменения размеров фрейма...
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ...
 			@Override
 			public void componentResized(ComponentEvent ce) {
 				repaint();
@@ -27,8 +34,8 @@ public class ImagePanel extends JPanel {
 		});
 
 		this.addMouseWheelListener(new MouseWheelListener() {
-			// добавляем обработчик событий который слушает колёсико мышки, ну и
-			// изменяет размер картинки
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅ
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent e) {
 				if (e.getWheelRotation() == 1) {
@@ -41,7 +48,7 @@ public class ImagePanel extends JPanel {
 		});
 
 		this.addMouseListener(new MouseAdapter() {
-			// записываем первую точку где кликается мышкой и начинается
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			// Drag&Dpop
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -49,15 +56,15 @@ public class ImagePanel extends JPanel {
 				pressedBtn = true;
 			}
 
-			// Тут просто быдло кодинг...
-			// Метод берет параметры выделеного прямоугольника и перерисовывает
-			// тлько выделеную часть картнки
-			// Т.к. картинка может менять свои размеры(когда крутишь колесико),
-			// то выделеные координаты не соответсвуют
-			// координатам картинки. Потому мы делим на zoom
-			// Блоки if...else - если бы их не было, тогда когда прямоугольник
-			// был больше отрисованной картинки,
-			// то отрисовывалась уже удаленная часть картинки
+			// пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ...
+			// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			// пїЅ.пїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ(пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ),
+			// пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ zoom
+			// пїЅпїЅпїЅпїЅпїЅ if...else - пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			// пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ,
+			// пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				pressedBtn = false;
@@ -83,7 +90,7 @@ public class ImagePanel extends JPanel {
 		this.addMouseMotionListener(new MouseAdapter() {
 			@Override
 
-			// Отрисовываем прямоугольник, который показывает что выделяется.
+			// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 			public void mouseDragged(MouseEvent e) {
 				double x, y, w, h;
 
@@ -129,24 +136,25 @@ public class ImagePanel extends JPanel {
 	public void setImage(String path) throws IOException {
 
 		img = ImageIO.read(new File(path));
-		
+
 		byte[] array = Files.readAllBytes(new File(path).toPath());
-		 byte[]array2 = new byte[600];
+		byte[] array2 = new byte[600];
 		ArrayList<Byte> list = new ArrayList<Byte>();
 
 		System.out.println(array.length);
 
-//		for (int j = 1; j <= 4; j++) {
-//
-//			if (j == 1 || j == 3 || j == 5 || j == 7 || j == 9 || j == 11 || j == 13 || j == 15) {
-//
-//				for (int i = 0; i < 3000; i++) {
-//
-//					list.add(array[i]);
-//				}
-//			}
-//		}
-		
+		// for (int j = 1; j <= 4; j++) {
+		//
+		// if (j == 1 || j == 3 || j == 5 || j == 7 || j == 9 || j == 11 || j ==
+		// 13 || j == 15) {
+		//
+		// for (int i = 0; i < 3000; i++) {
+		//
+		// list.add(array[i]);
+		// }
+		// }
+		// }
+
 		for (int i = 0; i < 600; i++) {
 
 			list.add(array[i]);
@@ -156,13 +164,13 @@ public class ImagePanel extends JPanel {
 		// array2[i]=array[i];
 		// }
 
-		byte[] array2 = new byte[list.size()];
+		byte[] array21 = new byte[list.size()];
 
-//		for (int i = 0; i < list.size(); i++) {
-//			array2[i] = list.get(i);
-//		}
+		// for (int i = 0; i < list.size(); i++) {
+		// array2[i] = list.get(i);
+		// }
 
-		BufferedImage imag_pic = ImageIO.read(new ByteArrayInputStream(array2));
+		BufferedImage imag_pic = ImageIO.read(new ByteArrayInputStream(array21));
 		img = imag_pic;
 
 		zoom = 1;
@@ -170,8 +178,7 @@ public class ImagePanel extends JPanel {
 		yImg = 0;
 		wImg = img.getWidth(ImagePanel.this);
 		hImg = img.getHeight(ImagePanel.this);
-		img.get
-
+		// img.get();
 		repaint();
 
 		// byte[] imageInByte = img.toByteArray();
@@ -179,13 +186,13 @@ public class ImagePanel extends JPanel {
 		// imagedata);
 	}
 
-	private int xImg, yImg, wImg, hImg; // переменные в которых хранятся
-										// координаты части картинки которую над
-										// показывать.
-										// при чем wImg, hImg - это не длина
-										// части картинки которую над показать,
-										// а координата второго угла
-										// прямоугольника.
+	private int xImg, yImg, wImg, hImg; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+										// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
+										// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
+										// пїЅпїЅпїЅ пїЅпїЅпїЅ wImg, hImg - пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+										// пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ,
+										// пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+										// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
 	private double zoom = 1;
 	private Rectangle2D rect = new Rectangle2D.Double();
 	private static Image img = null;
